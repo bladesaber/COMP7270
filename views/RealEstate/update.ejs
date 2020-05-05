@@ -1,0 +1,91 @@
+<!-- <p>this is a update page</p> -->
+
+<script>
+    function delete_btn() {
+        var form = document.getElementById("form_cell");
+        form.action = form.action.replace("method", "delete");
+        form.submit();
+
+    };
+
+    function update_btn() {
+        var form = document.getElementById("form_cell");
+        form.action = form.action.replace("method", "update");
+        form.submit();
+
+    };
+
+    async function submitForm(oFormElement) {
+
+        var response = await fetch(oFormElement.action, {
+            method: oFormElement.method,
+            credentials: 'same-origin',
+            body: new FormData(oFormElement),
+        });
+
+        if (response.ok) {
+            var data = await response.json();   // for res.ok() or res.json()
+            alert(data);
+            location.reload()
+        } else {
+            alert(response.statusText);
+        }
+    };
+
+</script>
+
+<div>
+    <label style="display: none">ID: <%= model.id %></label>
+    <!-- <form action="/estate/method/?id=<%= model.id %>" method="POST" id="form_cell" class="row"> -->
+    <form action="/estate/update/?id=<%= model.id %>" method="POST" id="form_cell" class="row" onsubmit="submitForm(this);return false">
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label style="display: block; font-size:20px;">Propery title:</label>
+                <input class="form-control" name="title" type="text" value="<%= model.title %>" required>
+            </div>
+            <div class="form-group">
+                <label style="display: block; font-size:20px;">Estate:</label>
+                <select class="form-control" name="estate" required>
+                    <option value="Festival City">Festival City</option>
+                    <option value="City One Shatin">City One Shatin</option>
+                    <option value="Tin Ma Court">Tin Ma Court</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label style="display: block; font-size:20px;">Gross Area:</label>
+                <input class="form-control" name="grossArea" type="number" value="<%= model.grossArea %>"
+                    required>
+            </div>
+            <div class="form-group">
+                <label style="display: block; font-size:20px;">Rent:</label>
+                <input class="form-control" name="rent" type="number" value="<%= model.rent %>" required>
+            </div>
+            <!-- <button type="button" class="btn btn-danger" onclick="delete_btn()">Delete</button> -->
+            <!-- <button type="submit" class="btn btn-danger" formaction="/estate/delete/?id=<%= model.id %>">Delete</button> -->
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label style="display: block; font-size:20px;">imageURL:</label>
+                <input class="form-control" name="imageURL" type="text" value="<%= model.imageURL %>">
+            </div>
+            <div class="form-group">
+                <label style="display: block; font-size:20px;">Bedrooms:</label>
+                <input class="form-control" name="bedrooms" type="number" value="<%= model.bedrooms %>"
+                    required>
+            </div>
+            <div class="form-group">
+                <label style="display: block; font-size:20px;">Expected Tenants:</label>
+                <input class="form-control" name="tenants" type="number"
+                    value="<%= model.expectedTenants %>" required>
+            </div>
+            <div class="form-group">
+                <input type="checkbox" value="dummy" name="highlighted"><span> Highlighted Property</span>
+            </div>
+            <!-- <button type="button" class="btn btn-primary" onclick="update_btn()">Submit</button> -->
+            <!-- <button type="submit" class="btn btn-primary" formaction="/estate/update/?id=<%= model.id %>">Submit</button> -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+
+</div>

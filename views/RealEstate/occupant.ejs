@@ -1,0 +1,72 @@
+<!-- <p>this is a occupant page</p> -->
+
+<script>
+
+    // async function Move_Out(user_Id, estate_Id) {
+    //     const data = { userId: user_Id, estateId: estate_Id }
+    //     var r = confirm("Confirm Move Out?");
+    //     if (r) {
+    //         var response = await fetch("/estate/rent_delete", {
+    //             method: "POST",
+    //             'Content-Type': 'application/json',
+    //             credentials: 'same-origin',
+    //             body: JSON.stringify(data),
+    //         });
+
+    //         var message = await response.text();
+    //         alert(message);
+    //         location.reload();
+    //     }
+    // }
+
+    async function Move_Out(user_Id, estate_Id) {
+        var r = confirm("Confirm Move Out? hh");
+        if (r) {
+            var response = await fetch("/estate/rent_delete/" + user_Id + "/" + estate_Id, {
+                method: "DELETE",
+                credentials: 'same-origin',
+            });
+
+            var message = await response.text();
+            alert(message);
+            location.reload();
+        }
+    };
+
+</script>
+
+<div>
+    <p style="font-size:20px; font-weight: bold;"><%= model.title %></p>
+    <div class="row">
+        <div class="col-12 col-md-4" style="display: flex; justify-content: center; align-items: center;">
+            <img src="<%= model.imageURL %>" class="card-img" alt="...">
+        </div>
+        <div class="col-12 col-md-4" style="padding-top: 0px; margin-bottom: 20px;">
+            <p>Estate Detail</p>
+            <ul class="list-group" id="ul_list">
+                <li class="list-group-item">Estate: <%= model.estate %></li>
+                <li class="list-group-item">Gross Area: <%= model.grossArea %></li>
+                <li class="list-group-item">Rent: $<%= model.rent %></li>
+                <li class="list-group-item">Badrooms: $<%= model.bedrooms %></li>
+                <li class="list-group-item">Expected Tenants: $<%= model.expectedTenants %></li>
+                <li class="list-group-item">Create: <%= new Date(model.createdAt).toLocaleString() %></li>
+                <li class="list-group-item">Update: <%= new Date(model.updatedAt).toLocaleString() %></li>
+            </ul>
+        </div>
+        <div class="col-12 col-md-4" style="padding-top: 0px; margin-bottom: 20px;">
+            <p>Estate Occupant</p>
+            <table class="table">
+                <tbody>
+                    <% model.rented.forEach( function(user) { %>
+                    <tr>
+                        <th scope="row">User: <%= user.id %></th>
+                        <td><a href=""><%= user.username %></a></td>
+                        <td><button class="btn btn-danger"
+                                onclick="Move_Out('<%= user.id %>', '<%= model.id %>')">Delete</a></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

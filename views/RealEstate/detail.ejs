@@ -1,0 +1,106 @@
+<!-- <p>this is a detail page</p> -->
+
+<script>
+
+    async function getState(user_Id, estate_Id) {
+
+        if (user_Id) {
+            var response = await fetch("/estate/rentStatus?userId=" + user_Id + "&estateId=" + estate_Id, {
+                method: "GET",
+                credentials: 'same-origin',
+            });
+
+            var message = await response.text();
+            // console.log(message == "Rented");
+            if ("Rented" == message) {
+                ul_list = document.getElementById("ul_list");
+
+                btn = document.createElement("button");
+                btn.innerText = "Move Out";
+                btn.className = "btn btn-primary";
+                btn.onclick = async function Move_Out() {
+                    const data = { userId: user_Id, estateId: estate_Id }
+                    var r = confirm("Confirm Move Out?");
+                    if (r) {
+                        var response = await fetch("/estate/rent_delete", {
+                            method: "POST",
+                            'Content-Type': 'application/json',
+                            credentials: 'same-origin',
+                            body: JSON.stringify(data),
+                        });
+
+                        var message = await response.text();
+                        alert(message);
+                        location.reload();
+                    }
+                };
+                ul_list.append(btn);
+
+            } else {
+                btn = document.createElement("button");
+                btn.className = "btn btn-primary";
+                btn.innerText = "Co-Rent";
+                btn.onclick = async function rent() {
+                    const data = { userId: user_Id, estateId: estate_Id }
+                    var r = confirm("Confirm Co-Rent?");
+                    if (r) {
+                        var response = await fetch("/estate/rent_add", {
+                            method: "POST",
+                            'Content-Type': 'application/json',
+                            credentials: 'same-origin',
+                            body: JSON.stringify(data),
+                        });
+
+                        var message = await response.text();
+                        alert(message);
+                        location.reload();
+                    }
+                };
+                ul_list.append(btn);
+
+            }
+        } else {
+            // alert("Service Error, Please contact adminster")
+
+            ul_list = document.getElementById("ul_list");
+
+            btn = document.createElement("button");
+            btn.innerText = "Login";
+            btn.className = "btn btn-primary";
+            btn.onclick = async function Login() {
+                window.location = "/user/login";
+            };
+            ul_list.append(btn);
+        }
+    }
+
+</script>
+
+<div>
+    <p style="font-size:20px; font-weight: bold;"><%= model.title %></p>
+    <div class="row detailMain">
+        <div class="col-12 col-md-8"
+            style="display: flex; justify-content: center; align-items: center; width: 80%; height: 80%;">
+            <img src="<%= model.imageURL %>" class="card-img" alt="...">
+        </div>
+        <div class="col-12 col-md-4" style="padding-top: 0px">
+
+            <ul class="list-group" id="ul_list">
+                <li class="list-group-item">available Tenants: <%= model.available_Tenants %></li>
+                <li class="list-group-item">Estate: <%= model.estate %></li>
+                <li class="list-group-item">Gross Area: <%= model.grossArea %></li>
+                <li class="list-group-item">Rent: $<%= model.rent %></li>
+                <li class="list-group-item">Badrooms: $<%= model.bedrooms %></li>
+                <li class="list-group-item">Expected Tenants: $<%= model.expectedTenants %></li>
+                <li class="list-group-item">Create: <%= new Date(model.createdAt).toLocaleString() %></li>
+                <li class="list-group-item">Update: <%= new Date(model.updatedAt).toLocaleString() %></li>
+            </ul>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    console.log("Begin");
+    getState('<%= req.session.userid %>', '<%= model.id %>');
+</script>
